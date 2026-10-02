@@ -97,11 +97,17 @@
     <label for="user" data-i18n="s1.user"></label>
     <input type="text" id="user" autocomplete="username" spellcheck="false" placeholder="my-github-name">
     <p class="muted" data-i18n="s1.noaccount"></p>
-    <a class="btn" id="createRepo" target="_blank" rel="noopener" data-i18n="s1.button"></a>
-    <p class="muted" data-i18n="s1.hint"></p>
     <label for="repo" data-i18n="s1.repo"></label>
     <input type="text" id="repo" spellcheck="false" placeholder="my-aaps">
     <p class="muted" data-i18n="s1.repoHint"></p>
+    <div class="box"><span data-i18n="yourRepo"></span> <code class="repoUrl"></code></div>
+    <a class="btn" id="createRepo" target="_blank" rel="noopener" data-i18n="s1.button"></a>
+    <p data-i18n="s1.onGithub"></p>
+    <ol class="small">
+      <li><span data-i18n="s1.gh1"></span> <code class="repoName"></code> <span data-i18n="s1.gh1b"></span></li>
+      <li data-i18n="s1.gh2"></li>
+      <li data-i18n="s1.gh3"></li>
+    </ol>
   </section>
 
   <!-- Step 2: keystore -->
@@ -152,7 +158,9 @@
     <p id="s3wait" class="muted" data-i18n="s3.wait"></p>
     <div id="s3ready" hidden>
       <ol class="small">
-        <li><a class="btn secondary" id="openSecrets" target="_blank" rel="noopener" data-i18n="s3.open"></a></li>
+        <li><a class="btn secondary" id="openSecrets" target="_blank" rel="noopener" data-i18n="s3.open"></a>
+          <p class="muted"><span data-i18n="opens"></span> <code class="repoUrl"></code></p>
+          <p class="muted" data-i18n="notFound"></p></li>
         <li><span data-i18n="s3.name"></span>
           <div class="secret-row"><code>KEYSTORE_SET</code> <button class="btn secondary" style="margin:0" data-copy="name" data-i18n="copy"></button></div></li>
         <li><span data-i18n="s3.value"></span>
@@ -167,7 +175,8 @@
   <section class="step" id="s4">
     <h2><span class="num">4</span><span data-i18n="s4.title"></span></h2>
     <ol class="small">
-      <li><a class="btn" id="openActions" target="_blank" rel="noopener" data-i18n="s4.open"></a></li>
+      <li><a class="btn" id="openActions" target="_blank" rel="noopener" data-i18n="s4.open"></a>
+        <p class="muted"><span data-i18n="opens"></span> <code class="repoUrl"></code></p></li>
       <li data-i18n="s4.enable"></li>
       <li data-i18n="s4.run"></li>
       <li data-i18n="s4.wait"></li>
@@ -204,9 +213,16 @@
       's1.user': 'Your GitHub username',
       's1.noaccount': 'No account? Create one for free at github.com first.',
       's1.button': 'Create my private repository',
-      's1.hint': 'On the page that opens, check that "Private" is selected and click "Create repository".',
       's1.repo': 'Name of your repository',
-      's1.repoHint': 'Only change this if you gave your repository another name.',
+      's1.repoHint': 'Keep the suggestion. Already created your repository with another name? Type that exact name here.',
+      's1.onGithub': 'On the GitHub page that opens:',
+      's1.gh1': '"Repository name" must be',
+      's1.gh1b': '(do not change it)',
+      's1.gh2': 'Select "Private".',
+      's1.gh3': 'Click "Create repository".',
+      yourRepo: 'Your repository:',
+      opens: 'Opens:',
+      notFound: 'Getting "Page not found" (404)? Then the name in step 1 does not match your repository. Check the name on github.com and type it in step 1. You can also use the buttons on your repository\'s front page.',
       's2.title': 'Your signing key',
       's2.text': 'The app must be signed with your own key. Always use the same key, otherwise you have to uninstall AAPS (and lose its settings) to update.',
       's2.have': 'I already have a keystore',
@@ -269,9 +285,16 @@
       's1.user': 'Ditt GitHub-användarnamn',
       's1.noaccount': 'Inget konto? Skapa ett gratis på github.com först.',
       's1.button': 'Skapa mitt privata repo',
-      's1.hint': 'På sidan som öppnas: kontrollera att "Private" är valt och klicka "Create repository".',
       's1.repo': 'Namnet på ditt repo',
-      's1.repoHint': 'Ändra bara om du gav ditt repo ett annat namn.',
+      's1.repoHint': 'Behåll förslaget. Har du redan skapat ditt repo med ett annat namn? Skriv exakt det namnet här.',
+      's1.onGithub': 'På GitHub-sidan som öppnas:',
+      's1.gh1': '"Repository name" ska vara',
+      's1.gh1b': '(ändra inte)',
+      's1.gh2': 'Välj "Private".',
+      's1.gh3': 'Klicka "Create repository".',
+      yourRepo: 'Ditt repo:',
+      opens: 'Öppnar:',
+      notFound: 'Får du "Page not found" (404)? Då stämmer inte namnet i steg 1 med ditt repo. Kolla namnet på github.com och skriv in det i steg 1. Du kan också använda knapparna på ditt repos förstasida.',
       's2.title': 'Din signeringsnyckel',
       's2.text': 'Appen måste signeras med din egen nyckel. Använd alltid samma nyckel, annars måste du avinstallera AAPS (och tappa inställningarna) för att uppdatera.',
       's2.have': 'Jag har redan en keystore',
@@ -360,6 +383,8 @@
     const p = new URLSearchParams({ template_owner: TEMPLATE.owner, template_name: TEMPLATE.name, name: repo(), visibility: 'private' });
     if (u) p.set('owner', u);
     $('createRepo').href = 'https://github.com/new?' + p;
+    document.querySelectorAll('.repoName').forEach(el => { el.textContent = repo(); });
+    document.querySelectorAll('.repoUrl').forEach(el => { el.textContent = `github.com/${u || '…'}/${repo()}`; });
     const base = `https://github.com/${encodeURIComponent(u)}/${encodeURIComponent(repo())}`;
     for (const [id, path] of [['openSecrets', '/settings/secrets/actions/new'], ['openActions', '/actions/workflows/build.yml']]) {
       $(id).href = u ? base + path : '#s1';
