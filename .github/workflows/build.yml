@@ -32,6 +32,12 @@ jobs:
       UPSTREAM: https://github.com/nightscout/AndroidAPS.git
       HAS_GDRIVE: ${{ secrets.GDRIVE_OAUTH2 != '' }}
     steps:
+      - name: Check that this is your own copy
+        if: ${{ github.event.repository.is_template }}
+        run: |
+          echo "::error::This is the template. Create your own private copy with the setup page: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
+          exit 1
+
       - name: Check that the repository is private
         if: ${{ !github.event.repository.private && env.HAS_GDRIVE != 'true' }}
         run: |
