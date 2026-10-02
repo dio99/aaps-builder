@@ -173,7 +173,7 @@ jobs:
             -d client_id="$CLIENT_ID" -d refresh_token="$REFRESH_TOKEN" \
             -d grant_type=refresh_token | jq -r .access_token)
           if [ -z "$TOKEN" ] || [ "$TOKEN" = "null" ]; then
-            echo "::error::Could not log in to Google Drive. Check GDRIVE_OAUTH2."
+            echo "::error::Google Drive access has expired or was revoked (unused for 6 months or Google password changed). Redo step 6 on the setup page and update the GDRIVE_OAUTH2 secret."
             exit 1
           fi
           echo "::add-mask::$TOKEN"
