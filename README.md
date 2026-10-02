@@ -1,26 +1,35 @@
 # AAPS Builder
 
 Build your own [AAPS](https://github.com/nightscout/AndroidAPS) app in GitHub. Nothing to install, no terminal.
+Bygg din egen AAPS-app i GitHub. Inget att installera, ingen terminal.
 
-**👉 Start here: the setup page** (`https://<owner>.github.io/aaps-builder/`)
+## 👉 New here? / Ny här?
 
-The setup page walks you through everything:
+Start with the setup page. It walks you through everything:
+Börja med inställningssidan. Den guidar dig genom allt:
 
-1. **Create your private build repository**: one click, from this template.
-2. **Your signing key**: pick your existing keystore, or create a new one in the browser.
-3. **Paste one secret** (`KEYSTORE_SET`) into your repository.
-4. **Build**: Actions → *Build AAPS* → *Run workflow*.
-5. **Install**: download the APK from the finished build.
+**https://dio99.github.io/aaps-builder/**
 
-New AAPS version? Just repeat step 4. `latest` always builds the newest release.
+## 🔧 Already have your own copy? / Har du redan en egen kopia?
 
-## Why a private repository?
+These buttons always open **this** repository, whatever you named it:
+Knapparna öppnar alltid **det här** repot, oavsett vad det heter:
+
+| | |
+|---|---|
+| 🔑 **[Add your key / Lägg till din nyckel](../../settings/secrets/actions/new)** | Name: `KEYSTORE_SET` · Secret: from the setup page / från inställningssidan |
+| ▶️ **[Build AAPS / Bygg AAPS](../../actions/workflows/build.yml)** | Run workflow → Run workflow |
+| 📦 **[My builds / Mina byggen](../../actions)** | Open a finished build → Artifacts → download / ladda ner |
+
+New AAPS version? Just press **Build AAPS** again. `latest` always builds the newest release.
+Ny AAPS-version? Tryck bara **Bygg AAPS** igen. `latest` bygger alltid den senaste versionen.
+
+## Why a private repository? / Varför ett privat repo?
 
 Everything a build produces is visible to anyone who can see the repository. A **private** repository keeps
 your APK for your eyes only. The workflow refuses to run in a public repository unless the APKs go to
-Google Drive instead.
-
-Private repositories get 2000 free GitHub Actions minutes per month. One build takes about 30–60 minutes.
+Google Drive instead. Private repositories get 2000 free GitHub Actions minutes per month; one build takes
+about 30–60 minutes.
 
 ## Secrets
 
