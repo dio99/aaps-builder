@@ -188,7 +188,23 @@
     <h2><span class="num">5</span><span data-i18n="s5.title"></span></h2>
     <p data-i18n="s5.text"></p>
     <p class="muted" data-i18n="s5.update"></p>
-    <p class="muted" data-i18n="s5.drive"></p>
+  </section>
+
+  <!-- Step 6: optional Google Drive -->
+  <section class="step" id="s6">
+    <h2><span class="num">6</span><span data-i18n="s6.title"></span></h2>
+    <p data-i18n="s6.text"></p>
+    <ol class="small">
+      <li><span data-i18n="s6.get"></span>
+        <br><a class="btn secondary" href="https://androidaps.readthedocs.io/en/latest/SettingUpAaps/BrowserBuild.html" target="_blank" rel="noopener" data-i18n="s6.guide"></a></li>
+      <li><a class="btn secondary" id="openSecrets2" target="_blank" rel="noopener" data-i18n="s3.open"></a>
+        <p class="muted"><span data-i18n="opens"></span> <code class="repoUrl"></code></p></li>
+      <li><span data-i18n="s3.name"></span>
+        <div class="secret-row"><code>GDRIVE_OAUTH2</code> <button class="btn secondary" style="margin:0" data-copy="gdrive" data-i18n="copy"></button></div></li>
+      <li data-i18n="s6.paste"></li>
+    </ol>
+    <p data-i18n="s6.result"></p>
+    <p class="muted" data-i18n="s6.expire"></p>
   </section>
 
   <footer data-i18n="footer"></footer>
@@ -257,7 +273,13 @@
       's5.title': 'Install on your phone',
       's5.text': 'On your phone, log in to github.com, open your repository → Actions → the finished build. Under "Artifacts", download the file, open it and install aaps-….apk. (aaps-wear-….apk is for the watch.)',
       's5.update': 'New AAPS version? Just repeat step 4.',
-      's5.drive': 'Advanced (optional): add a secret GDRIVE_OAUTH2 as described in the AAPS documentation and the APKs will also appear in your Google Drive in the folder AAPS.',
+      's6.title': 'Optional: get the app in Google Drive',
+      's6.text': 'Want the APK to show up in your Google Drive (easy to install from the phone, and kept forever)? Add one more secret.',
+      's6.get': 'On your phone, follow the section "Google Drive Auth" in the official AAPS guide. It uses the official AAPS preparation page and gives you a GDRIVE_OAUTH2 value to copy. (You can skip its keystore part, you already have your key.)',
+      's6.guide': 'Open the AAPS guide',
+      's6.paste': 'In "Secret", paste the GDRIVE_OAUTH2 value and click "Add secret".',
+      's6.result': 'Next build, the APKs are also saved in Google Drive in the folder AAPS/<version>.',
+      's6.expire': 'If you do not build for 6 months, or change your Google password, Google stops the access. The build then says so: redo this step.',
       footer: 'Everything on this page runs in your browser. Your key and passwords are never sent anywhere except where you paste them yourself.',
       copy: 'Copy',
       copied: 'Copied! Now paste it in GitHub.',
@@ -329,7 +351,13 @@
       's5.title': 'Installera på telefonen',
       's5.text': 'Logga in på github.com i telefonen, öppna ditt repo → Actions → det färdiga bygget. Under "Artifacts", ladda ner filen, öppna den och installera aaps-….apk. (aaps-wear-….apk är för klockan.)',
       's5.update': 'Ny AAPS-version? Gör bara om steg 4.',
-      's5.drive': 'Avancerat (valfritt): lägg till en secret GDRIVE_OAUTH2 enligt AAPS-dokumentationen så hamnar APK-filerna även i din Google Drive i mappen AAPS.',
+      's6.title': 'Valfritt: få appen i Google Drive',
+      's6.text': 'Vill du att APK:n hamnar i din Google Drive (lätt att installera från telefonen och sparas för alltid)? Lägg till en secret till.',
+      's6.get': 'Följ avsnittet "Google Drive Auth" i den officiella AAPS-guiden på telefonen. Den använder AAPS officiella förberedelsesida och ger dig ett GDRIVE_OAUTH2-värde att kopiera. (Hoppa över keystore-delen, du har redan din nyckel.)',
+      's6.guide': 'Öppna AAPS-guiden',
+      's6.paste': 'I "Secret", klistra in GDRIVE_OAUTH2-värdet och klicka "Add secret".',
+      's6.result': 'Vid nästa bygge sparas APK-filerna även i Google Drive i mappen AAPS/<version>.',
+      's6.expire': 'Om du inte bygger på 6 månader, eller byter Google-lösenord, stänger Google åtkomsten. Bygget säger då till: gör om det här steget.',
       footer: 'Allt på den här sidan körs i din webbläsare. Din nyckel och dina lösenord skickas ingenstans, förutom dit du själv klistrar in dem.',
       copy: 'Kopiera',
       copied: 'Kopierat! Klistra nu in i GitHub.',
@@ -386,13 +414,13 @@
     document.querySelectorAll('.repoName').forEach(el => { el.textContent = repo(); });
     document.querySelectorAll('.repoUrl').forEach(el => { el.textContent = `github.com/${u || '…'}/${repo()}`; });
     const base = `https://github.com/${encodeURIComponent(u)}/${encodeURIComponent(repo())}`;
-    for (const [id, path] of [['openSecrets', '/settings/secrets/actions/new'], ['openActions', '/actions/workflows/build.yml']]) {
+    for (const [id, path] of [['openSecrets', '/settings/secrets/actions/new'], ['openSecrets2', '/settings/secrets/actions/new'], ['openActions', '/actions/workflows/build.yml']]) {
       $(id).href = u ? base + path : '#s1';
     }
   }
   userInput.addEventListener('input', updateLinks);
   repoInput.addEventListener('input', updateLinks);
-  for (const id of ['openSecrets', 'openActions']) {
+  for (const id of ['openSecrets', 'openSecrets2', 'openActions']) {
     $(id).addEventListener('click', e => { if (!user()) { e.preventDefault(); userInput.focus(); alert(t('needUser')); } });
   }
 
@@ -584,7 +612,7 @@
 
   // ---------- step 3: copy ----------
   document.querySelectorAll('[data-copy]').forEach(b => b.addEventListener('click', async () => {
-    const text = b.dataset.copy === 'name' ? 'KEYSTORE_SET' : secretValue;
+    const text = b.dataset.copy === 'name' ? 'KEYSTORE_SET' : b.dataset.copy === 'gdrive' ? 'GDRIVE_OAUTH2' : secretValue;
     try { await navigator.clipboard.writeText(text); }
     catch {
       const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta);
