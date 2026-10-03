@@ -243,6 +243,13 @@ jobs:
           WEAR_URL: ${{ steps.wear.outputs.artifact-url }}
         run: |
           {
+            echo "> [!WARNING]"
+            echo "> **Before you install: back up your settings! / Innan du installerar: säkerhetskopiera dina inställningar!**"
+            echo "> 1. AAPS → Maintenance → **Export settings** / Underhåll → **Exportera inställningar**"
+            echo "> 2. Copy the exported file **off the phone** (Google Drive, Dropbox…) / Kopiera filen **utanför telefonen** (Google Drive, Dropbox…)"
+            echo ">"
+            echo "> [How to export / Så exporterar du](https://androidaps.readthedocs.io/en/latest/Maintenance/ExportImportSettings.html) · [AAPS FAQ: backups](https://androidaps.readthedocs.io/en/latest/UsefulLinks/FAQ.html#how-to-organize-my-backups)"
+            echo
             echo "## 📱 [Download AAPS $VERSION / Ladda ner AAPS $VERSION]($PHONE_URL)"
             echo "Open this page on your phone, tap the link, then tap the downloaded file to install."
             echo "Öppna sidan i telefonen, tryck på länken och sedan på den nedladdade filen för att installera."
