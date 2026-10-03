@@ -25,8 +25,28 @@ Knapparna öppnar alltid **det här** repot, oavsett vad det heter:
 | ▶️ **[Build AAPS / Bygg AAPS](../../actions/workflows/build.yml)** | Run workflow → Run workflow |
 | 📦 **[My builds / Mina byggen](../../actions)** | Open a finished build → Artifacts → download / ladda ner |
 
-New AAPS version? Just press **Build AAPS** again. `latest` always builds the newest release.
-Ny AAPS-version? Tryck bara **Bygg AAPS** igen. `latest` bygger alltid den senaste versionen.
+**New AAPS version?** Nothing to do. Every night your repository checks nightscout and builds a new version
+automatically. Already built versions are never built again. You can always build by hand with **Build AAPS**.
+**Ny AAPS-version?** Inget att göra. Varje natt kollar ditt repo nightscout och bygger en ny version automatiskt.
+Redan byggda versioner byggs aldrig om. Du kan alltid bygga för hand med **Bygg AAPS**.
+
+Turn off automatic builds / Stäng av automatiska byggen: Settings → Secrets and variables → Actions → Variables →
+`AUTO_BUILD` = `false`.
+
+**Updates / Uppdateringar:** your repository is fully self-contained: no code from anywhere else ever runs with
+your key. When a new version of AAPS Builder is released, you get an issue (and an e-mail) in your repository with
+2-minute update instructions. / Ditt repo är helt fristående: ingen kod utifrån kör någonsin med din nyckel. När en ny
+version av AAPS Builder släpps får du ett ärende (och ett mejl) i ditt repo med instruktioner för att uppdatera.
+
+## ⚠️ Before every update / Före varje uppdatering
+
+1. AAPS → Maintenance → **Export settings** / Underhåll → **Exportera inställningar**
+2. Copy the exported file **off the phone** (Google Drive, Dropbox…), together with the APK files. Keep several older
+   exports. / Kopiera filen **utanför telefonen** (Google Drive, Dropbox…) tillsammans med APK-filerna. Spara flera
+   äldre exporter.
+
+[How to export settings](https://androidaps.readthedocs.io/en/latest/Maintenance/ExportImportSettings.html) ·
+[AAPS FAQ: how to organize backups](https://androidaps.readthedocs.io/en/latest/UsefulLinks/FAQ.html#how-to-organize-my-backups)
 
 ## Why a private repository? / Varför ett privat repo?
 
