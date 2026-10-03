@@ -71,6 +71,9 @@
   .tabs button.on { border-color: var(--accent); background: var(--soft); }
   .tabs b { display: block; }
   .msg { margin-top: 10px; font-size: .95rem; }
+  .warnbox { border-left: 4px solid var(--warn); background: var(--soft); border-radius: 8px; padding: 12px 14px; margin: 12px 0; }
+  .warnbox ol { margin: 6px 0 0; padding-left: 20px; }
+  .warnbox a { color: var(--accent); }
   .msg.ok { color: var(--ok); } .msg.err { color: var(--err); } .msg.warn { color: var(--warn); }
   .box { background: var(--soft); border-radius: 8px; padding: 12px 14px; margin-top: 12px; }
   .secret-row { display: flex; gap: 8px; align-items: center; margin-top: 8px; flex-wrap: wrap; }
@@ -186,6 +189,15 @@
   <!-- Step 5: install -->
   <section class="step" id="s5">
     <h2><span class="num">5</span><span data-i18n="s5.title"></span></h2>
+    <div class="warnbox">
+      <b data-i18n="bk.title"></b>
+      <ol>
+        <li data-i18n="bk.1"></li>
+        <li data-i18n="bk.2"></li>
+        <li data-i18n="bk.3"></li>
+      </ol>
+      <p class="muted" style="margin-bottom:0"><a href="https://androidaps.readthedocs.io/en/latest/Maintenance/ExportImportSettings.html" target="_blank" rel="noopener" data-i18n="bk.howto"></a> · <a href="https://androidaps.readthedocs.io/en/latest/UsefulLinks/FAQ.html#how-to-organize-my-backups" target="_blank" rel="noopener" data-i18n="bk.faq"></a></p>
+    </div>
     <ol class="small">
       <li data-i18n="s5.1"></li>
       <li><a class="btn secondary" id="openRuns" target="_blank" rel="noopener" data-i18n="s5.open"></a></li>
@@ -279,6 +291,12 @@
       's4.run': 'Click "Run workflow", then the green "Run workflow" button. "latest" builds the newest AAPS version.',
       's4.wait': 'Wait about 30–60 minutes. A green check means it is done.',
       's5.title': 'Install on your phone',
+      'bk.title': '⚠️ Before every update: back up your settings!',
+      'bk.1': 'In AAPS: Maintenance → Export settings. (Do this regularly anyway, e.g. after a profile change or once a month.)',
+      'bk.2': 'Copy the exported file OFF the phone, e.g. to Google Drive or Dropbox. A backup that only lives on the phone is lost together with the phone.',
+      'bk.3': 'Keep the APK files and several older exports there too. Then you can always go back.',
+      'bk.howto': 'How to export settings',
+      'bk.faq': 'AAPS FAQ: how to organize backups',
       's5.1': 'Open this page on your phone, in the web browser (Chrome). Not in the GitHub app: it cannot download builds. Log in to github.com if asked.',
       's5.open': 'Open my builds',
       's5.2': 'Tap the newest build with a green check ✅.',
@@ -363,6 +381,12 @@
       's4.run': 'Klicka "Run workflow" och sedan på den gröna knappen "Run workflow". "latest" bygger den senaste AAPS-versionen.',
       's4.wait': 'Vänta cirka 30–60 minuter. En grön bock betyder att det är klart.',
       's5.title': 'Installera på telefonen',
+      'bk.title': '⚠️ Före varje uppdatering: säkerhetskopiera dina inställningar!',
+      'bk.1': 'I AAPS: Underhåll (Maintenance) → Exportera inställningar. (Gör det regelbundet ändå, t.ex. efter profilbyte eller en gång i månaden.)',
+      'bk.2': 'Kopiera den exporterade filen UTANFÖR telefonen, t.ex. till Google Drive eller Dropbox. En backup som bara finns i telefonen försvinner tillsammans med telefonen.',
+      'bk.3': 'Spara även APK-filerna och flera äldre exporter där. Då kan du alltid gå tillbaka.',
+      'bk.howto': 'Så exporterar du inställningar',
+      'bk.faq': 'AAPS FAQ: så organiserar du backuper',
       's5.1': 'Öppna den här sidan i telefonens webbläsare (Chrome). Inte i GitHub-appen, den kan inte ladda ner byggen. Logga in på github.com om du blir tillfrågad.',
       's5.open': 'Öppna mina byggen',
       's5.2': 'Tryck på det senaste bygget med grön bock ✅.',
