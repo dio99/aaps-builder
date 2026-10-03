@@ -216,13 +216,41 @@ jobs:
           rm -rf "$RUNNER_TEMP/keystore"
           ls -l out
 
-      - name: Upload APKs (download them from this page)
-        if: ${{ needs.check.outputs.private == 'true' }}
-        uses: actions/upload-artifact@v4
+      # Without Google Drive the check job only lets private repositories get this far.
+      # archive: false uploads the APK itself (no zip), so the phone can install it directly.
+      - name: Upload phone APK (download it from this page)
+        id: phone
+        if: ${{ needs.check.outputs.private == 'true' || env.HAS_GDRIVE != 'true' }}
+        uses: actions/upload-artifact@v7
         with:
-          name: aaps-${{ env.VERSION }}${{ env.SUFFIX }}
-          path: out/*.apk
+          path: out/aaps-${{ env.VERSION }}${{ env.SUFFIX }}.apk
+          archive: false
           retention-days: 14
+
+      - name: Upload watch APK
+        id: wear
+        if: ${{ needs.check.outputs.private == 'true' || env.HAS_GDRIVE != 'true' }}
+        uses: actions/upload-artifact@v7
+        with:
+          path: out/aaps-wear-${{ env.VERSION }}${{ env.SUFFIX }}.apk
+          archive: false
+          retention-days: 14
+
+      - name: Show download links
+        if: ${{ steps.phone.outputs.artifact-url != '' }}
+        env:
+          PHONE_URL: ${{ steps.phone.outputs.artifact-url }}
+          WEAR_URL: ${{ steps.wear.outputs.artifact-url }}
+        run: |
+          {
+            echo "## 📱 [Download AAPS $VERSION / Ladda ner AAPS $VERSION]($PHONE_URL)"
+            echo "Open this page on your phone, tap the link, then tap the downloaded file to install."
+            echo "Öppna sidan i telefonen, tryck på länken och sedan på den nedladdade filen för att installera."
+            echo
+            echo "⌚ [Watch / Klocka: aaps-wear-$VERSION$SUFFIX.apk]($WEAR_URL) (only for a smartwatch / bara för smartklocka)"
+            echo
+            echo "_Available for 14 days / Finns kvar i 14 dagar._"
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload APKs to Google Drive
         if: ${{ env.HAS_GDRIVE == 'true' }}
