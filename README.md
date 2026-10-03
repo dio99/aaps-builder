@@ -3,6 +3,10 @@
 Build your own [AAPS](https://github.com/nightscout/AndroidAPS) app in GitHub. Nothing to install, no terminal.
 Bygg din egen AAPS-app i GitHub. Inget att installera, ingen terminal.
 
+> **No fork needed / Ingen fork behövs.** You do not need to fork AndroidAPS. The source code is downloaded from
+> [nightscout/AndroidAPS](https://github.com/nightscout/AndroidAPS) at every build. / Du behöver inte forka
+> AndroidAPS. Koden hämtas från nightscout vid varje bygge.
+
 ## 👉 New here? / Ny här?
 
 Start with the setup page. It walks you through everything:
