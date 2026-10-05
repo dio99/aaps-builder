@@ -35,7 +35,7 @@ permissions:
 
 env:
   # Version of this file. Bump it (and the VERSION file) when publishing a new aaps-builder release.
-  BUILDER_VERSION: 2
+  BUILDER_VERSION: 1
   BUILDER_REPO: dio99/aaps-builder
   IN_VERSION: ${{ inputs.version || 'latest' }}
   IN_VARIANT: ${{ inputs.variant || vars.AUTO_VARIANT || 'fullRelease' }}
