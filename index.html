@@ -107,7 +107,8 @@
     <a class="btn" id="createRepo" target="_blank" rel="noopener" data-i18n="s1.button"></a>
     <p data-i18n="s1.onGithub"></p>
     <ol class="small">
-      <li><span data-i18n="s1.gh1"></span> <code class="repoName"></code> <span data-i18n="s1.gh1b"></span></li>
+      <li><span data-i18n="s1.gh1"></span>
+        <div class="secret-row"><code class="repoName"></code> <button class="btn secondary" style="margin:0" data-copy="repo" data-i18n="copy"></button></div></li>
       <li data-i18n="s1.gh2"></li>
       <li data-i18n="s1.gh3"></li>
     </ol>
@@ -260,9 +261,8 @@
       's1.repo': 'Name of your repository',
       's1.repoHint': 'Keep the suggestion. Already created your repository with another name? Type that exact name here.',
       's1.onGithub': 'On the GitHub page that opens:',
-      's1.gh1': 'In "Repository name", type',
-      's1.gh1b': '(exactly as here)',
-      's1.gh2': 'Select "Private".',
+      's1.gh1': '"Repository name" must be exactly this (if it is empty: copy and paste it):',
+      's1.gh2': 'Check that "Private" is selected (not Public!).',
       's1.gh3': 'Click "Create repository".',
       yourRepo: 'Your repository:',
       opens: 'Opens:',
@@ -327,6 +327,7 @@
       footer: 'Everything on this page runs in your browser. Your key and passwords are never sent anywhere except where you paste them yourself.',
       copy: 'Copy',
       copied: 'Copied! Now paste it in GitHub.',
+      copiedShort: 'Copied ✓',
       needUser: 'Enter your GitHub username in step 1 first.',
       errPipe: 'Passwords and alias cannot contain the character |',
       errNoFile: 'Choose your keystore file.',
@@ -354,9 +355,8 @@
       's1.repo': 'Namnet på ditt repo',
       's1.repoHint': 'Behåll förslaget. Har du redan skapat ditt repo med ett annat namn? Skriv exakt det namnet här.',
       's1.onGithub': 'På GitHub-sidan som öppnas:',
-      's1.gh1': 'I "Repository name", skriv',
-      's1.gh1b': '(exakt som här)',
-      's1.gh2': 'Välj "Private".',
+      's1.gh1': '"Repository name" ska vara exakt detta (om fältet är tomt: kopiera och klistra in):',
+      's1.gh2': 'Kontrollera att "Private" är valt (inte Public!).',
       's1.gh3': 'Klicka "Create repository".',
       yourRepo: 'Ditt repo:',
       opens: 'Öppnar:',
@@ -421,6 +421,7 @@
       footer: 'Allt på den här sidan körs i din webbläsare. Din nyckel och dina lösenord skickas ingenstans, förutom dit du själv klistrar in dem.',
       copy: 'Kopiera',
       copied: 'Kopierat! Klistra nu in i GitHub.',
+      copiedShort: 'Kopierat ✓',
       needUser: 'Skriv in ditt GitHub-användarnamn i steg 1 först.',
       errPipe: 'Lösenord och alias får inte innehålla tecknet |',
       errNoFile: 'Välj din keystore-fil.',
@@ -469,7 +470,9 @@
     store.set('ghUser', u);
     store.set('ghRepo', repo());
     // GitHub's own "Use this template" page: guarantees the copy contains the build workflow
-    $('createRepo').href = `https://github.com/${TEMPLATE.owner}/${TEMPLATE.name}/generate`;
+    const p = new URLSearchParams({ name: repo(), visibility: 'private' });
+    if (u) p.set('owner', u);
+    $('createRepo').href = `https://github.com/${TEMPLATE.owner}/${TEMPLATE.name}/generate?` + p;
     document.querySelectorAll('.repoName').forEach(el => { el.textContent = repo(); });
     document.querySelectorAll('.repoUrl').forEach(el => { el.textContent = `github.com/${u || '…'}/${repo()}`; });
     const base = `https://github.com/${encodeURIComponent(u)}/${encodeURIComponent(repo())}`;
@@ -671,13 +674,16 @@
 
   // ---------- step 3: copy ----------
   document.querySelectorAll('[data-copy]').forEach(b => b.addEventListener('click', async () => {
-    const text = b.dataset.copy === 'name' ? 'KEYSTORE_SET' : b.dataset.copy === 'gdrive' ? 'GDRIVE_OAUTH2' : secretValue;
+    const fixed = { name: 'KEYSTORE_SET', gdrive: 'GDRIVE_OAUTH2', repo: repo() };
+    const text = fixed[b.dataset.copy] ?? secretValue;
     try { await navigator.clipboard.writeText(text); }
     catch {
       const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta);
       ta.select(); document.execCommand('copy'); ta.remove();
     }
-    msg('copyMsg', 'copied', 'ok');
+    if (b.dataset.copy === 'secret') msg('copyMsg', 'copied', 'ok');
+    b.textContent = t('copiedShort');
+    setTimeout(() => { b.textContent = t(b.dataset.i18n); }, 2000);
   }));
 
   applyLang();
