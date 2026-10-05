@@ -184,6 +184,14 @@
       <li data-i18n="s4.run"></li>
       <li data-i18n="s4.wait"></li>
     </ol>
+    <div class="warnbox">
+      <b data-i18n="s4.trouble"></b>
+      <ol>
+        <li data-i18n="s4.t1"></li>
+        <li data-i18n="s4.t2"></li>
+        <li data-i18n="s4.t3"></li>
+      </ol>
+    </div>
   </section>
 
   <!-- Step 5: install -->
@@ -252,8 +260,8 @@
       's1.repo': 'Name of your repository',
       's1.repoHint': 'Keep the suggestion. Already created your repository with another name? Type that exact name here.',
       's1.onGithub': 'On the GitHub page that opens:',
-      's1.gh1': '"Repository name" must be',
-      's1.gh1b': '(do not change it)',
+      's1.gh1': 'In "Repository name", type',
+      's1.gh1b': '(exactly as here)',
       's1.gh2': 'Select "Private".',
       's1.gh3': 'Click "Create repository".',
       yourRepo: 'Your repository:',
@@ -288,6 +296,10 @@
       's4.title': 'Build the app',
       's4.open': 'Open the build page',
       's4.enable': 'If asked, click the green button to enable workflows.',
+      's4.trouble': 'No "Build AAPS" / "Run workflow" button?',
+      's4.t1': 'Open your repository and look at the files. You must see a folder .github and the file README.md. If the repository is empty, it was not created from the template: delete it (Settings → bottom of the page → Delete this repository) and do step 1 again with the button.',
+      's4.t2': 'Did you click "Fork" instead of the button in step 1? A fork does not work. Delete it and use the button in step 1.',
+      's4.t3': 'Open the Actions tab. If it says workflows are disabled, click the green button to enable them. Then click "Build AAPS" in the list on the left.',
       's4.run': 'Click "Run workflow", then the green "Run workflow" button. "latest" builds the newest AAPS version.',
       's4.wait': 'Wait about 30–60 minutes. A green check means it is done.',
       's5.title': 'Install on your phone',
@@ -342,8 +354,8 @@
       's1.repo': 'Namnet på ditt repo',
       's1.repoHint': 'Behåll förslaget. Har du redan skapat ditt repo med ett annat namn? Skriv exakt det namnet här.',
       's1.onGithub': 'På GitHub-sidan som öppnas:',
-      's1.gh1': '"Repository name" ska vara',
-      's1.gh1b': '(ändra inte)',
+      's1.gh1': 'I "Repository name", skriv',
+      's1.gh1b': '(exakt som här)',
       's1.gh2': 'Välj "Private".',
       's1.gh3': 'Klicka "Create repository".',
       yourRepo: 'Ditt repo:',
@@ -378,6 +390,10 @@
       's4.title': 'Bygg appen',
       's4.open': 'Öppna byggsidan',
       's4.enable': 'Om du får frågan: klicka på den gröna knappen för att aktivera workflows.',
+      's4.trouble': 'Ingen knapp "Build AAPS" / "Run workflow"?',
+      's4.t1': 'Öppna ditt repo och titta på filerna. Du ska se en mapp .github och filen README.md. Är repot tomt skapades det inte från mallen: ta bort det (Settings → längst ner → Delete this repository) och gör om steg 1 med knappen.',
+      's4.t2': 'Klickade du på "Fork" i stället för knappen i steg 1? En fork fungerar inte. Ta bort den och använd knappen i steg 1.',
+      's4.t3': 'Öppna fliken Actions. Står det att workflows är avstängda, klicka på den gröna knappen för att slå på dem. Klicka sedan på "Build AAPS" i listan till vänster.',
       's4.run': 'Klicka "Run workflow" och sedan på den gröna knappen "Run workflow". "latest" bygger den senaste AAPS-versionen.',
       's4.wait': 'Vänta cirka 30–60 minuter. En grön bock betyder att det är klart.',
       's5.title': 'Installera på telefonen',
@@ -452,9 +468,8 @@
     const u = user();
     store.set('ghUser', u);
     store.set('ghRepo', repo());
-    const p = new URLSearchParams({ template_owner: TEMPLATE.owner, template_name: TEMPLATE.name, name: repo(), visibility: 'private' });
-    if (u) p.set('owner', u);
-    $('createRepo').href = 'https://github.com/new?' + p;
+    // GitHub's own "Use this template" page: guarantees the copy contains the build workflow
+    $('createRepo').href = `https://github.com/${TEMPLATE.owner}/${TEMPLATE.name}/generate`;
     document.querySelectorAll('.repoName').forEach(el => { el.textContent = repo(); });
     document.querySelectorAll('.repoUrl').forEach(el => { el.textContent = `github.com/${u || '…'}/${repo()}`; });
     const base = `https://github.com/${encodeURIComponent(u)}/${encodeURIComponent(repo())}`;
