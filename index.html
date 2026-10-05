@@ -107,11 +107,9 @@
     <a class="btn" id="createRepo" target="_blank" rel="noopener" data-i18n="s1.button"></a>
     <p data-i18n="s1.onGithub"></p>
     <ol class="small">
-      <li><span data-i18n="s1.gh1"></span>
-        <div class="secret-row"><code class="repoName"></code> <button class="btn secondary" style="margin:0" data-copy="repo" data-i18n="copy"></button></div></li>
-      <li data-i18n="s1.gh2"></li>
       <li data-i18n="s1.gh3"></li>
     </ol>
+    <p class="muted"><span data-i18n="s1.gh1"></span> <code class="repoName"></code>, <span data-i18n="s1.gh2"></span></p>
   </section>
 
   <!-- Step 2: keystore -->
@@ -256,14 +254,14 @@
       's1.title': 'Create your private build repository',
       's1.text': 'This creates your own private copy of the builder in your GitHub account. Only you can see it and the apps it builds. You do NOT need to fork AndroidAPS: the AAPS source code is downloaded automatically from nightscout at every build.',
       's1.user': 'Your GitHub username',
-      's1.noaccount': 'No account? Create one for free at github.com first.',
+      's1.noaccount': 'First log in to github.com in this browser (no account? create one for free). Then come back here.',
       's1.button': 'Create my private repository',
       's1.repo': 'Name of your repository',
       's1.repoHint': 'Keep the suggestion. Already created your repository with another name? Type that exact name here.',
-      's1.onGithub': 'On the GitHub page that opens:',
-      's1.gh1': '"Repository name" must be exactly this (if it is empty: copy and paste it):',
-      's1.gh2': 'Check that "Private" is selected (not Public!).',
-      's1.gh3': 'Click "Create repository".',
+      's1.onGithub': 'On the GitHub page that opens, everything is already filled in:',
+      's1.gh1': 'It should say name',
+      's1.gh2': 'and "Private" should be selected. Do not change anything.',
+      's1.gh3': 'Just click the green "Create repository" button. Done!',
       yourRepo: 'Your repository:',
       opens: 'Opens:',
       notFound: 'Getting "Page not found" (404)? Then the name in step 1 does not match your repository. Check the name on github.com and type it in step 1. You can also use the buttons on your repository\'s front page.',
@@ -350,14 +348,14 @@
       's1.title': 'Skapa ditt privata bygg-repo',
       's1.text': 'Här skapas din egen privata kopia av byggverktyget på ditt GitHub-konto. Bara du kan se den och apparna den bygger. Du behöver INTE forka AndroidAPS: AAPS-koden hämtas automatiskt från nightscout vid varje bygge.',
       's1.user': 'Ditt GitHub-användarnamn',
-      's1.noaccount': 'Inget konto? Skapa ett gratis på github.com först.',
+      's1.noaccount': 'Logga först in på github.com i den här webbläsaren (inget konto? skapa ett gratis). Kom sedan tillbaka hit.',
       's1.button': 'Skapa mitt privata repo',
       's1.repo': 'Namnet på ditt repo',
       's1.repoHint': 'Behåll förslaget. Har du redan skapat ditt repo med ett annat namn? Skriv exakt det namnet här.',
-      's1.onGithub': 'På GitHub-sidan som öppnas:',
-      's1.gh1': '"Repository name" ska vara exakt detta (om fältet är tomt: kopiera och klistra in):',
-      's1.gh2': 'Kontrollera att "Private" är valt (inte Public!).',
-      's1.gh3': 'Klicka "Create repository".',
+      's1.onGithub': 'På GitHub-sidan som öppnas är allt redan ifyllt:',
+      's1.gh1': 'Där ska stå namnet',
+      's1.gh2': 'och "Private" ska vara valt. Ändra ingenting.',
+      's1.gh3': 'Klicka bara på den gröna knappen "Create repository". Klart!',
       yourRepo: 'Ditt repo:',
       opens: 'Öppnar:',
       notFound: 'Får du "Page not found" (404)? Då stämmer inte namnet i steg 1 med ditt repo. Kolla namnet på github.com och skriv in det i steg 1. Du kan också använda knapparna på ditt repos förstasida.',
@@ -470,9 +468,10 @@
     store.set('ghUser', u);
     store.set('ghRepo', repo());
     // GitHub's own "Use this template" page: guarantees the copy contains the build workflow
-    const p = new URLSearchParams({ name: repo(), visibility: 'private' });
-    if (u) p.set('owner', u);
-    $('createRepo').href = `https://github.com/${TEMPLATE.owner}/${TEMPLATE.name}/generate?` + p;
+    // Documented prefill parameters of github.com/new; owner=@me is the signed-in user
+    const p = new URLSearchParams({ template_owner: TEMPLATE.owner, template_name: TEMPLATE.name,
+                                    owner: '@me', name: repo(), visibility: 'private' });
+    $('createRepo').href = 'https://github.com/new?' + p;
     document.querySelectorAll('.repoName').forEach(el => { el.textContent = repo(); });
     document.querySelectorAll('.repoUrl').forEach(el => { el.textContent = `github.com/${u || '…'}/${repo()}`; });
     const base = `https://github.com/${encodeURIComponent(u)}/${encodeURIComponent(repo())}`;
