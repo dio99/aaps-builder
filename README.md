@@ -25,9 +25,9 @@ Knapparna öppnar alltid **det här** repot, oavsett vad det heter:
 | ▶️ **[Build AAPS / Bygg AAPS](../../actions/workflows/build.yml)** | Run workflow → Run workflow |
 | 📦 **[My builds / Mina byggen](../../actions)** | Open a finished build → Artifacts → download / ladda ner |
 
-**New AAPS version?** Nothing to do. Every night your repository checks nightscout and builds a new version
+**New AAPS version?** Nothing to do. Once a week (Monday night) your repository checks nightscout and builds a new version
 automatically. Already built versions are never built again. You can always build by hand with **Build AAPS**.
-**Ny AAPS-version?** Inget att göra. Varje natt kollar ditt repo nightscout och bygger en ny version automatiskt.
+**Ny AAPS-version?** Inget att göra. En gång i veckan (natten mot måndag) kollar ditt repo nightscout och bygger en ny version automatiskt.
 Redan byggda versioner byggs aldrig om. Du kan alltid bygga för hand med **Bygg AAPS**.
 
 Turn off automatic builds / Stäng av automatiska byggen: Settings → Secrets and variables → Actions → Variables →
