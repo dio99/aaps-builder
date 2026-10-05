@@ -1,9 +1,9 @@
 name: Build AAPS
-run-name: ${{ github.event_name == 'schedule' && 'Nightly check for a new AAPS version' || format('Build AAPS {0} ({1})', inputs.version, inputs.variant) }}
+run-name: ${{ github.event_name == 'schedule' && 'Weekly check for a new AAPS version' || format('Build AAPS {0} ({1})', inputs.version, inputs.variant) }}
 
 # Everything this repository does is in this file. Nothing is run from anywhere else.
 #
-# Every night it checks whether nightscout released a new AAPS version and builds it.
+# Once a week (Monday night) it checks whether nightscout released a new AAPS version and builds it.
 # To turn that off: Settings -> Secrets and variables -> Actions -> Variables ->
 # New repository variable: AUTO_BUILD = false
 # To auto-build another variant than fullRelease, add a variable AUTO_VARIANT (e.g. aapsclientRelease).
@@ -28,14 +28,14 @@ on:
           - pumpcontrolRelease
           - fullDebug
   schedule:
-    - cron: '23 3 * * *'
+    - cron: '23 3 * * 1'   # Mondays 03:23 UTC
 
 permissions:
   contents: read
 
 env:
   # Version of this file. Bump it (and the VERSION file) when publishing a new aaps-builder release.
-  BUILDER_VERSION: 1
+  BUILDER_VERSION: 2
   BUILDER_REPO: dio99/aaps-builder
   IN_VERSION: ${{ inputs.version || 'latest' }}
   IN_VARIANT: ${{ inputs.variant || vars.AUTO_VARIANT || 'fullRelease' }}
@@ -321,7 +321,7 @@ jobs:
           case "$CODE" in
             201) echo "🏷️ Marked $TAG" ;;
             422) echo "🏷️ $TAG already marked" ;;
-            *) echo "::warning::Could not mark $TAG ($CODE). The nightly check may build this version again." ;;
+            *) echo "::warning::Could not mark $TAG ($CODE). The weekly check may build this version again." ;;
           esac
 
   # Tells you (with a GitHub issue, which also sends you an e-mail) when a newer version of
