@@ -66,3 +66,13 @@ about 30–60 minutes.
 
 The setup page runs entirely in your browser. Your keystore and passwords are never sent anywhere, except into
 the GitHub secret you paste them into yourself.
+## License
+
+This project is open-source software licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**. 
+
+### Key Terms
+* **Copyleft:** Any modifications or derivative works must also be open-sourced under the AGPL-3.0.
+* **Network Trigger:** If you run a modified version of this software on a server and let users interact with it over a network, you must make your modified source code available to those users.
+
+For the full license text, please see the [LICENSE](LICENSE) file.
+
