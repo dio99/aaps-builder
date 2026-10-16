@@ -22,7 +22,8 @@ These buttons always open **this** repository, whatever you named it:
 | 📦 **[My builds](../../actions)** | Open a finished build → tap **📱 Download AAPS** |
 
 > **On a phone, use the web browser (Chrome), not the GitHub app.** The app cannot show or download your builds.
-> In the app, tap **⋮** → **Open in browser**. To stop GitHub links opening in the app: Android Settings → Apps →
+> In the app, open the build, tap the **share icon** (top right) → **Copy link**, then open Chrome and paste the link
+> in the address bar. To stop GitHub links opening in the app: Android Settings → Apps →
 > GitHub → Open by default → turn off **Open supported links**.
 
 **New AAPS version?** Nothing to do. Once a week (Monday night) your repository checks nightscout and builds a new
