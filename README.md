@@ -33,6 +33,12 @@ Redan byggda versioner byggs aldrig om. Du kan alltid bygga för hand med **Bygg
 Turn off automatic builds / Stäng av automatiska byggen: Settings → Secrets and variables → Actions → Variables →
 `AUTO_BUILD` = `false`.
 
+**📧 E-mail when a build is done (optional) / Mejl när ett bygge är klart (valfritt):** by default GitHub only
+e-mails you when a build fails. To also get an e-mail when it succeeds: open
+[github.com/settings/notifications](https://github.com/settings/notifications) → **System → Actions** → untick
+**"Only notify for failed workflows"**. / Som standard mejlar GitHub bara när ett bygge misslyckas. För att även få
+mejl när det lyckas: öppna länken ovan → **System → Actions** → bocka ur **"Only notify for failed workflows"**.
+
 **Updates / Uppdateringar:** your repository is fully self-contained: no code from anywhere else ever runs with
 your key. When a new version of AAPS Builder is released, you get an issue (and an e-mail) in your repository with
 2-minute update instructions. / Ditt repo är helt fristående: ingen kod utifrån kör någonsin med din nyckel. När en ny
