@@ -21,6 +21,10 @@ These buttons always open **this** repository, whatever you named it:
 | ▶️ **[Build AAPS](../../actions/workflows/build.yml)** | Run workflow → Run workflow |
 | 📦 **[My builds](../../actions)** | Open a finished build → tap **📱 Download AAPS** |
 
+> **On a phone, use the web browser (Chrome), not the GitHub app.** The app cannot show or download your builds.
+> In the app, tap **⋮** → **Open in browser**. To stop GitHub links opening in the app: Android Settings → Apps →
+> GitHub → Open by default → turn off **Open supported links**.
+
 **New AAPS version?** Nothing to do. Once a week (Monday night) your repository checks nightscout and builds a new
 version automatically. Already built versions are never built again. You can always build by hand with **Build AAPS**.
 
