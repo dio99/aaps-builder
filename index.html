@@ -164,9 +164,10 @@
           <p class="muted"><span data-i18n="opens"></span> <code class="repoUrl"></code></p>
           <p class="muted" data-i18n="notFound"></p></li>
         <li><span data-i18n="s3.name"></span>
-          <div class="secret-row"><code>KEYSTORE_SET</code> <button class="btn secondary" style="margin:0" data-copy="name" data-i18n="copy"></button></div></li>
+          <div class="secret-row"><code>KEYSTORE_SET</code> <button class="btn secondary" style="margin:0" data-copy="name" data-i18n="s3.copyName"></button></div></li>
         <li><span data-i18n="s3.value"></span>
-          <div class="secret-row"><button class="btn" style="margin:0" data-copy="secret" data-i18n="s3.copyValue"></button></div></li>
+          <div class="secret-row"><code id="secretPreview"></code> <button class="btn" style="margin:0" data-copy="secret" data-i18n="s3.copyValue"></button></div>
+          <p class="muted" data-i18n="s3.valueHint"></p></li>
         <li data-i18n="s3.save"></li>
       </ol>
       <div class="msg" id="copyMsg"></div>
@@ -287,9 +288,12 @@
       's3.title': 'Give the key to your repository',
       's3.wait': 'Finish step 2 first.',
       's3.open': 'Open the secrets page',
-      's3.name': 'In "Name", enter:',
-      's3.value': 'In "Secret", paste:',
-      's3.copyValue': 'Copy secret',
+      's3.name': 'In the small "Name" field, enter the name:',
+      's3.value': 'In the big "Secret" box, paste the long code:',
+      's3.copyName': 'Copy name',
+      's3.copyValue': 'Copy long code',
+      's3.valueHint': 'The Secret is a very long code (thousands of characters), NOT the word KEYSTORE_SET. Copy the name first and paste it in "Name", then click "Copy long code" and paste it in "Secret".',
+      copiedName: 'Name copied: paste it in the small "Name" field.',
       's3.save': 'Click "Add secret". Done, you never need to do this again.',
       's4.title': 'Build the app',
       's4.open': 'Open the build page',
@@ -324,7 +328,7 @@
       's6.expire': 'If you do not build for 6 months, or change your Google password, Google stops the access. The build then says so: redo this step.',
       footer: 'Everything on this page runs in your browser. Your key and passwords are never sent anywhere except where you paste them yourself.',
       copy: 'Copy',
-      copied: 'Copied! Now paste it in GitHub.',
+      copied: 'Long code copied: paste it in the big "Secret" box, then click "Add secret".',
       copiedShort: 'Copied ✓',
       needUser: 'Enter your GitHub username in step 1 first.',
       errPipe: 'Passwords and alias cannot contain the character |',
@@ -381,9 +385,12 @@
       's3.title': 'Ge nyckeln till ditt repo',
       's3.wait': 'Gör klart steg 2 först.',
       's3.open': 'Öppna sidan för secrets',
-      's3.name': 'I "Name", skriv:',
-      's3.value': 'I "Secret", klistra in:',
-      's3.copyValue': 'Kopiera secret',
+      's3.name': 'I det lilla fältet "Name", skriv namnet:',
+      's3.value': 'I den stora rutan "Secret", klistra in den långa koden:',
+      's3.copyName': 'Kopiera namn',
+      's3.copyValue': 'Kopiera lång kod',
+      's3.valueHint': 'Secret är en mycket lång kod (tusentals tecken), INTE ordet KEYSTORE_SET. Kopiera först namnet och klistra in i "Name", klicka sedan "Kopiera lång kod" och klistra in i "Secret".',
+      copiedName: 'Namnet kopierat: klistra in i det lilla fältet "Name".',
       's3.save': 'Klicka "Add secret". Klart, detta behöver du aldrig göra igen.',
       's4.title': 'Bygg appen',
       's4.open': 'Öppna byggsidan',
@@ -418,7 +425,7 @@
       's6.expire': 'Om du inte bygger på 6 månader, eller byter Google-lösenord, stänger Google åtkomsten. Bygget säger då till: gör om det här steget.',
       footer: 'Allt på den här sidan körs i din webbläsare. Din nyckel och dina lösenord skickas ingenstans, förutom dit du själv klistrar in dem.',
       copy: 'Kopiera',
-      copied: 'Kopierat! Klistra nu in i GitHub.',
+      copied: 'Långa koden kopierad: klistra in i den stora rutan "Secret" och klicka "Add secret".',
       copiedShort: 'Kopierat ✓',
       needUser: 'Skriv in ditt GitHub-användarnamn i steg 1 först.',
       errPipe: 'Lösenord och alias får inte innehålla tecknet |',
@@ -506,6 +513,7 @@
   function setSecret(ksBytes, storePass, alias, keyPass) {
     const raw = [bytesToB64(ksBytes), storePass, alias, keyPass].join('|');
     secretValue = bytesToB64(utf8(raw));
+    $('secretPreview').textContent = secretValue.slice(0, 16) + '…';
     $('s2').classList.add('done');
     $('s3wait').hidden = true;
     $('s3ready').hidden = false;
@@ -681,6 +689,7 @@
       ta.select(); document.execCommand('copy'); ta.remove();
     }
     if (b.dataset.copy === 'secret') msg('copyMsg', 'copied', 'ok');
+    if (b.dataset.copy === 'name') msg('copyMsg', 'copiedName', 'ok');
     b.textContent = t('copiedShort');
     setTimeout(() => { b.textContent = t(b.dataset.i18n); }, 2000);
   }));
