@@ -118,11 +118,23 @@ jobs:
         env:
           KEYSTORE_SET: ${{ secrets.KEYSTORE_SET }}
         run: |
-          DECODED=$(printf '%s' "$KEYSTORE_SET" | tr -d ' \r\n' | base64 -d) || { echo "::error::KEYSTORE_SET is not valid. Copy it again from the setup page."; exit 1; }
+          # Note: GitHub hides the secret's value in the log as ***, so these messages
+          # must not contain text that could be the value itself (like the secret's name).
+          HINT="Open Settings -> Secrets and variables -> Actions, edit the secret and paste the LONG code from 'Copy long code' on the setup page (step 3)."
+          VALUE=$(printf '%s' "$KEYSTORE_SET" | tr -d ' \r\n')
+          if [ ${#VALUE} -lt 200 ]; then
+            echo "::error::The secret is too short (${#VALUE} characters). It must be a very long code, not the secret's name. $HINT"
+            exit 1
+          fi
+          DECODED=$(printf '%s' "$VALUE" | base64 -d 2>/dev/null) || { echo "::error::The secret is not a valid code (incomplete or wrong text was pasted). $HINT"; exit 1; }
           KEYSTORE_BASE64=$(printf '%s' "$DECODED" | cut -d'|' -f1)
           KEYSTORE_PASSWORD=$(printf '%s' "$DECODED" | cut -d'|' -f2)
           KEY_ALIAS=$(printf '%s' "$DECODED" | cut -d'|' -f3)
           KEY_PASSWORD=$(printf '%s' "$DECODED" | cut -d'|' -f4)
+          if [ "$(printf '%s' "$DECODED" | tr -cd '|' | wc -c)" -ne 3 ] || [ -z "$KEY_ALIAS" ] || [ -z "$KEY_PASSWORD" ]; then
+            echo "::error::The secret does not contain a keystore with passwords and alias. $HINT"
+            exit 1
+          fi
           echo "::add-mask::$KEYSTORE_PASSWORD"
           echo "::add-mask::$KEY_PASSWORD"
           mkdir -p "$RUNNER_TEMP/keystore"
