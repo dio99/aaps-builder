@@ -26,18 +26,39 @@ These buttons always open **this** repository, whatever you named it:
 > in the address bar. To stop GitHub links opening in the app: Android Settings → Apps →
 > GitHub → Open by default → turn off **Open supported links**.
 
-**New AAPS version?** Nothing to do. Once a week (Monday night) your repository checks nightscout and builds a new
-version automatically. Already built versions are never built again. You can always build by hand with **Build AAPS**.
-
-Turn off automatic builds: Settings → Secrets and variables → Actions → Variables → `AUTO_BUILD` = `false`.
+**New AAPS version?** Press **Build AAPS** → **Run workflow** again. `latest` always builds the newest release.
 
 **📧 E-mail when a build is done (optional):** by default GitHub only e-mails you when a build fails. To also get an
 e-mail when it succeeds: open [github.com/settings/notifications](https://github.com/settings/notifications) →
 **System → Actions** → untick **"Only notify for failed workflows"**.
 
 **Updates:** your repository is fully self-contained: no code from anywhere else ever runs with your key. If an
-update of AAPS Builder is ever required, you get an issue (and an e-mail) in your repository with 2-minute update
-instructions.
+update of AAPS Builder is ever required, you get an issue (and an e-mail) in your repository. See
+[Updating your copy](#-updating-your-copy).
+
+## 🔄 Updating your copy
+
+Do this when you get an **"AAPS Builder update available"** issue. Your copy does not change by itself, so you copy
+one file. It takes 2 minutes. Use a **web browser**, on a computer if you can: the GitHub app cannot do this.
+
+1. Open the new file: **https://github.com/dio99/aaps-builder/blob/main/.github/workflows/build.yml**
+2. Click the **copy icon** ⧉ ("Copy raw file") at the top right of the file.
+   *On a phone:* open the plain-text version instead:
+   **https://raw.githubusercontent.com/dio99/aaps-builder/main/.github/workflows/build.yml**,
+   press and hold the text → **Select all** → **Copy**.
+3. Open **your own** repository → **Code** → folder `.github` → `workflows` → `build.yml`.
+4. Click the **pencil** ✏️ (Edit this file) at the top right.
+5. Click in the text and select everything (**Ctrl+A**; on a phone: press and hold → **Select all**), then paste
+   (**Ctrl+V** / **Paste**). The old text must be completely replaced.
+6. Click the green **Commit changes…** button, then **Commit changes** again.
+7. Close the issue. Your secret `KEYSTORE_SET` and everything else stay as they were.
+
+To check: run **Build AAPS** once. The step *Check for builder updates* should say "up to date".
+
+**Version 2:** automatic weekly builds were removed at the request of the AAPS developers. You always start a build
+yourself. Until you have updated, you can stop the automatic builds right away without editing any file:
+Settings → Secrets and variables → Actions → **Variables** → **New repository variable**: name `AUTO_BUILD`,
+value `false`.
 
 ## ⚠️ Before every update
 

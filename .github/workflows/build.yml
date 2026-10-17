@@ -1,12 +1,18 @@
 name: Build AAPS
-run-name: ${{ github.event_name == 'schedule' && 'Weekly check for a new AAPS version' || format('Build AAPS {0} ({1})', inputs.version, inputs.variant) }}
+run-name: Build AAPS ${{ inputs.version }} (${{ inputs.variant }})
 
-# Everything this repository does is in this file. Nothing is run from anywhere else.
+# ============================================================================================
+#  HOW TO UPDATE YOUR COPY: copy ALL of this file (copy icon at the top right of this page)
+#  and paste it over your own .github/workflows/build.yml.
+#  This file:         https://github.com/dio99/aaps-builder/blob/main/.github/workflows/build.yml
+#  Plain text (phone): https://raw.githubusercontent.com/dio99/aaps-builder/main/.github/workflows/build.yml
+#  Step-by-step guide: https://github.com/dio99/aaps-builder#-updating-your-copy
 #
-# Once a week (Monday night) it checks whether nightscout released a new AAPS version and builds it.
-# To turn that off: Settings -> Secrets and variables -> Actions -> Variables ->
-# New repository variable: AUTO_BUILD = false
-# To auto-build another variant than fullRelease, add a variable AUTO_VARIANT (e.g. aapsclientRelease).
+#  Version 2: automatic weekly builds were removed at the request of the AAPS developers.
+#  You always start a build yourself: Actions -> Build AAPS -> Run workflow.
+# ============================================================================================
+#
+# Everything this repository does is in this file. Nothing is run from anywhere else.
 
 on:
   workflow_dispatch:
@@ -27,24 +33,20 @@ on:
           - aapsclient2Release
           - pumpcontrolRelease
           - fullDebug
-  schedule:
-    - cron: '23 3 * * 1'   # Mondays 03:23 UTC
 
 permissions:
   contents: read
 
 env:
   # Version of this file. Bump it (and the VERSION file) when publishing a new aaps-builder release.
-  BUILDER_VERSION: 1
+  BUILDER_VERSION: 2
   BUILDER_REPO: dio99/aaps-builder
   IN_VERSION: ${{ inputs.version || 'latest' }}
-  IN_VARIANT: ${{ inputs.variant || vars.AUTO_VARIANT || 'fullRelease' }}
-  AUTO: ${{ github.event_name == 'schedule' }}
+  IN_VARIANT: ${{ inputs.variant || 'fullRelease' }}
 
 jobs:
   check:
     name: Check
-    if: ${{ github.event_name != 'schedule' || vars.AUTO_BUILD != 'false' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -61,11 +63,7 @@ jobs:
       - name: Check repository, version and keystore
         id: check
         run: |
-          # On a scheduled run, problems are not errors: just skip quietly.
-          stop() {
-            if [ "$AUTO" = true ]; then echo "ℹ️ $1 Skipping."; echo "build=false" >> "$GITHUB_OUTPUT"; exit 0; fi
-            echo "::error::$1"; exit 1
-          }
+          stop() { echo "::error::$1"; exit 1; }
           api() { curl -s -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" -w '\n%{http_code}' "https://api.github.com/repos/$GITHUB_REPOSITORY$1"; }
 
           REPO_JSON=$(api "" | head -n -1)
@@ -90,15 +88,6 @@ jobs:
             || stop "Version $VERSION does not exist in nightscout/AndroidAPS."
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
-          if [ "$AUTO" = true ]; then
-            CODE=$(api "/git/ref/tags/built/$VERSION-$IN_VARIANT" | tail -1)
-            if [ "$CODE" = 200 ]; then
-              echo "✅ AAPS $VERSION ($IN_VARIANT) is already built. Nothing to do."
-              echo "build=false" >> "$GITHUB_OUTPUT"
-              exit 0
-            fi
-            echo "🆕 New AAPS version $VERSION found, building."
-          fi
           echo "build=true" >> "$GITHUB_OUTPUT"
 
   build:
@@ -108,7 +97,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 150
     permissions:
-      contents: write   # to remember which version was built (tag built/<version>-<variant>)
+      contents: read
     env:
       UPSTREAM: https://github.com/nightscout/AndroidAPS.git
       HAS_GDRIVE: ${{ secrets.GDRIVE_OAUTH2 != '' }}
@@ -256,19 +245,18 @@ jobs:
         run: |
           {
             echo "> [!WARNING]"
-            echo "> **Before you install: back up your settings! / Innan du installerar: säkerhetskopiera dina inställningar!**"
-            echo "> 1. AAPS → Maintenance → **Export settings** / Underhåll → **Exportera inställningar**"
-            echo "> 2. Copy the exported file **off the phone** (Google Drive, Dropbox…) / Kopiera filen **utanför telefonen** (Google Drive, Dropbox…)"
+            echo "> **Before you install: back up your settings!**"
+            echo "> 1. AAPS → Maintenance → **Export settings**"
+            echo "> 2. Copy the exported file **off the phone** (Google Drive, Dropbox…)"
             echo ">"
-            echo "> [How to export / Så exporterar du](https://androidaps.readthedocs.io/en/latest/Maintenance/ExportImportSettings.html) · [AAPS FAQ: backups](https://androidaps.readthedocs.io/en/latest/UsefulLinks/FAQ.html#how-to-organize-my-backups)"
+            echo "> [How to export](https://androidaps.readthedocs.io/en/latest/Maintenance/ExportImportSettings.html) · [AAPS FAQ: backups](https://androidaps.readthedocs.io/en/latest/UsefulLinks/FAQ.html#how-to-organize-my-backups)"
             echo
-            echo "## 📱 [Download AAPS $VERSION / Ladda ner AAPS $VERSION]($PHONE_URL)"
-            echo "Open this page on your phone, tap the link, then tap the downloaded file to install."
-            echo "Öppna sidan i telefonen, tryck på länken och sedan på den nedladdade filen för att installera."
+            echo "## 📱 [Download AAPS $VERSION]($PHONE_URL)"
+            echo "Open this page on your phone in the web browser (not the GitHub app), tap the link, then tap the downloaded file to install."
             echo
-            echo "⌚ [Watch / Klocka: aaps-wear-$VERSION$SUFFIX.apk]($WEAR_URL) (only for a smartwatch / bara för smartklocka)"
+            echo "⌚ [Watch: aaps-wear-$VERSION$SUFFIX.apk]($WEAR_URL) (only for a smartwatch)"
             echo
-            echo "_Available for 14 days / Finns kvar i 14 dagar._"
+            echo "_Available for 14 days._"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload APKs to Google Drive
@@ -321,21 +309,6 @@ jobs:
           done
           echo "📁 APKs uploaded to Google Drive folder **AAPS/$VERSION**" >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Remember that this version is built
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          TAG="built/$VERSION-$VARIANT"
-          CODE=$(curl -s -o /dev/null -w '%{http_code}' -X POST \
-            -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/$GITHUB_REPOSITORY/git/refs" \
-            -d "{\"ref\":\"refs/tags/$TAG\",\"sha\":\"$GITHUB_SHA\"}")
-          case "$CODE" in
-            201) echo "🏷️ Marked $TAG" ;;
-            422) echo "🏷️ $TAG already marked" ;;
-            *) echo "::warning::Could not mark $TAG ($CODE). The weekly check may build this version again." ;;
-          esac
-
   # Tells you (with a GitHub issue, which also sends you an e-mail) when a newer version of
   # aaps-builder exists. It only reads a version number; nothing is updated automatically.
   builder-update:
@@ -360,16 +333,17 @@ jobs:
           fi
           EDIT="https://github.com/$GITHUB_REPOSITORY/edit/${GITHUB_REF_NAME}/.github/workflows/build.yml"
           gh issue create -R "$GITHUB_REPOSITORY" --title "$TITLE" --body "$(cat <<BODY
-          A newer version of AAPS Builder is available. Your app keeps building as before; updating is recommended but not urgent.
-          Det finns en ny version av AAPS Builder. Din app byggs som vanligt; uppdatering rekommenderas men är inte bråttom.
+          A newer version of AAPS Builder is available. Please update: see "What changed" below for why.
 
-          **What changed / Vad som är nytt:** https://github.com/$BUILDER_REPO/commits/main
+          **What changed:** https://github.com/$BUILDER_REPO/commits/main
 
-          **Update / Uppdatera (2 min):**
-          1. Open the new file / Öppna den nya filen: https://github.com/$BUILDER_REPO/blob/main/.github/workflows/build.yml
-             Click the copy button (⧉ "Copy raw file") / Klicka på kopieringsknappen (⧉ "Copy raw file").
-          2. Open your file / Öppna din fil: $EDIT
-          3. Select all (Ctrl+A), paste (Ctrl+V), click **Commit changes** / Markera allt, klistra in, klicka **Commit changes**.
-          4. Close this issue / Stäng det här ärendet.
+          **Step-by-step guide (also for phones):** https://github.com/$BUILDER_REPO#-updating-your-copy
+
+          **Update (2 min):**
+          1. Open the new file: https://github.com/$BUILDER_REPO/blob/main/.github/workflows/build.yml
+             Click the copy button (⧉ "Copy raw file").
+          2. Open your file: $EDIT
+          3. Select all (Ctrl+A), paste (Ctrl+V), click **Commit changes**.
+          4. Close this issue.
           BODY
           )" || echo "::warning::Could not create the issue (are issues turned off in this repository?)."
