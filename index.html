@@ -99,6 +99,7 @@
     <p data-i18n="s1.text"></p>
     <label for="user" data-i18n="s1.user"></label>
     <input type="text" id="user" autocomplete="username" spellcheck="false" placeholder="my-github-name">
+    <div class="msg" id="userMsg"></div>
     <p class="muted" data-i18n="s1.noaccount"></p>
     <label for="repo" data-i18n="s1.repo"></label>
     <input type="text" id="repo" spellcheck="false" placeholder="my-aaps">
@@ -179,7 +180,8 @@
     <h2><span class="num">4</span><span data-i18n="s4.title"></span></h2>
     <ol class="small">
       <li><a class="btn" id="openActions" target="_blank" rel="noopener" data-i18n="s4.open"></a>
-        <p class="muted"><span data-i18n="opens"></span> <code class="repoUrl"></code></p></li>
+        <p class="muted"><span data-i18n="opens"></span> <code class="repoUrl"></code></p>
+        <p class="muted" data-i18n="notFound"></p></li>
       <li data-i18n="s4.enable"></li>
       <li data-i18n="s4.run"></li>
       <li data-i18n="s4.wait"></li>
@@ -208,7 +210,8 @@
     </div>
     <ol class="small">
       <li data-i18n="s5.1"></li>
-      <li><a class="btn secondary" id="openRuns" target="_blank" rel="noopener" data-i18n="s5.open"></a></li>
+      <li><a class="btn secondary" id="openRuns" target="_blank" rel="noopener" data-i18n="s5.open"></a>
+        <p class="muted" data-i18n="notFound"></p></li>
       <li data-i18n="s5.2"></li>
       <li data-i18n="s5.3"></li>
       <li data-i18n="s5.4"></li>
@@ -226,7 +229,8 @@
       <li><span data-i18n="s6.get"></span>
         <br><a class="btn secondary" href="https://androidaps.readthedocs.io/en/latest/SettingUpAaps/BrowserBuild.html" target="_blank" rel="noopener" data-i18n="s6.guide"></a></li>
       <li><a class="btn secondary" id="openSecrets2" target="_blank" rel="noopener" data-i18n="s3.open"></a>
-        <p class="muted"><span data-i18n="opens"></span> <code class="repoUrl"></code></p></li>
+        <p class="muted"><span data-i18n="opens"></span> <code class="repoUrl"></code></p>
+        <p class="muted" data-i18n="notFound"></p></li>
       <li><span data-i18n="s3.name"></span>
         <div class="secret-row"><code>GDRIVE_OAUTH2</code> <button class="btn secondary" style="margin:0" data-copy="gdrive" data-i18n="copy"></button></div></li>
       <li data-i18n="s6.paste"></li>
@@ -265,7 +269,9 @@
       's1.gh3': 'Just click the green "Create repository" button. Done!',
       yourRepo: 'Your repository:',
       opens: 'Opens:',
-      notFound: 'Getting "Page not found" (404)? Then the name in step 1 does not match your repository. Check the name on github.com and type it in step 1. You can also use the buttons on your repository\'s front page.',
+      notFound: 'Getting "Page not found" (404)? 1) Log in to github.com in THIS browser: GitHub shows 404 for private repositories when you are not logged in. 2) Check your username and repository name in step 1. 3) Or skip these links: open your repository on github.com (your profile picture → Your repositories) and use the buttons Add your key / Build AAPS / My builds on its front page. They always work.',
+      userOk: '✓ GitHub user found.',
+      userBad: '✗ No GitHub user with this name. Use your username (shown in your profile), not your e-mail.',
       's2.title': 'Your signing key',
       's2.text': 'The app must be signed with your own key. Always use the same key, otherwise you have to uninstall AAPS (and lose its settings) to update.',
       's2.have': 'I already have a keystore',
@@ -362,7 +368,9 @@
       's1.gh3': 'Klicka bara på den gröna knappen "Create repository". Klart!',
       yourRepo: 'Ditt repo:',
       opens: 'Öppnar:',
-      notFound: 'Får du "Page not found" (404)? Då stämmer inte namnet i steg 1 med ditt repo. Kolla namnet på github.com och skriv in det i steg 1. Du kan också använda knapparna på ditt repos förstasida.',
+      notFound: 'Får du "Page not found" (404)? 1) Logga in på github.com i DEN HÄR webbläsaren: GitHub visar 404 för privata repon när du inte är inloggad. 2) Kontrollera användarnamn och reponamn i steg 1. 3) Eller hoppa över länkarna: öppna ditt repo på github.com (din profilbild → Your repositories) och använd knapparna Add your key / Build AAPS / My builds på dess förstasida. De fungerar alltid.',
+      userOk: '✓ GitHub-användaren finns.',
+      userBad: '✗ Ingen GitHub-användare med det namnet. Använd ditt användarnamn (syns i din profil), inte din e-post.',
       's2.title': 'Din signeringsnyckel',
       's2.text': 'Appen måste signeras med din egen nyckel. Använd alltid samma nyckel, annars måste du avinstallera AAPS (och tappa inställningarna) för att uppdatera.',
       's2.have': 'Jag har redan en keystore',
@@ -487,6 +495,20 @@
     }
   }
   userInput.addEventListener('input', updateLinks);
+  // Check that the username exists (public GitHub API, sends only the name)
+  let userTimer;
+  async function checkUser() {
+    const u = user();
+    if (!u) { $('userMsg').textContent = ''; return; }
+    try {
+      const r = await fetch(`https://api.github.com/users/${encodeURIComponent(u)}`);
+      if (u !== user()) return;
+      if (r.status === 200) msg('userMsg', 'userOk', 'ok');
+      else if (r.status === 404) msg('userMsg', 'userBad', 'err');
+      else $('userMsg').textContent = '';
+    } catch { $('userMsg').textContent = ''; }
+  }
+  userInput.addEventListener('input', () => { clearTimeout(userTimer); userTimer = setTimeout(checkUser, 600); });
   repoInput.addEventListener('input', updateLinks);
   for (const id of ['openSecrets', 'openSecrets2', 'openActions', 'openRuns']) {
     $(id).addEventListener('click', e => { if (!user()) { e.preventDefault(); userInput.focus(); alert(t('needUser')); } });
@@ -696,6 +718,7 @@
 
   applyLang();
   updateLinks();
+  checkUser();
 })();
 </script>
 </body>
