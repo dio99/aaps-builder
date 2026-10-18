@@ -289,7 +289,7 @@
       'new.pass2': 'Repeat the password',
       'new.button': 'Create key',
       'new.backupTitle': 'Save a backup of your key!',
-      'new.backupText': 'Download the file and keep it somewhere safe (e.g. your own cloud storage) together with the password and this information. You will need it if you ever build AAPS another way (e.g. Android Studio): key alias = aaps, key password = the same password as the keystore.',
+      'new.backupText': 'Download the file and keep it somewhere safe (e.g. your own cloud storage) together with the password and this information. You will need it if you ever build AAPS another way (e.g. Android Studio): key alias = key0, key password = the same password as the keystore.',
       'new.download': 'Download backup (aaps-keystore.jks)',
       's3.title': 'Give the key to your repository',
       's3.wait': 'Finish step 2 first.',
@@ -388,7 +388,7 @@
       'new.pass2': 'Upprepa lösenordet',
       'new.button': 'Skapa nyckel',
       'new.backupTitle': 'Spara en backup av din nyckel!',
-      'new.backupText': 'Ladda ner filen och spara den säkert (t.ex. i din egen molnlagring) tillsammans med lösenordet och den här informationen. Du behöver den om du någon gång bygger AAPS på annat sätt (t.ex. Android Studio): nyckelns alias = aaps, nyckellösenord = samma lösenord som för keystore-filen.',
+      'new.backupText': 'Ladda ner filen och spara den säkert (t.ex. i din egen molnlagring) tillsammans med lösenordet och den här informationen. Du behöver den om du någon gång bygger AAPS på annat sätt (t.ex. Android Studio): nyckelns alias = key0, nyckellösenord = samma lösenord som för keystore-filen.',
       'new.download': 'Ladda ner backup (aaps-keystore.jks)',
       's3.title': 'Ge nyckeln till ditt repo',
       's3.wait': 'Gör klart steg 2 först.',
@@ -672,9 +672,9 @@
       const subject = [{ name: 'commonName', value: 'AAPS' }];
       cert.setSubject(subject); cert.setIssuer(subject);
       cert.sign(key, forge.md.sha256.create());
-      const asn = forge.pkcs12.toPkcs12Asn1(key, [cert], p1, { algorithm: '3des', friendlyName: 'aaps', generateLocalKeyId: true });
+      const asn = forge.pkcs12.toPkcs12Asn1(key, [cert], p1, { algorithm: '3des', friendlyName: 'key0', generateLocalKeyId: true });
       newKsBytes = binStrToBytes(forge.asn1.toDer(asn).getBytes());
-      setSecret(newKsBytes, p1, 'aaps', p1);
+      setSecret(newKsBytes, p1, 'key0', p1);
       $('backupBox').hidden = false;
       msg('newMsg', 'okNew', 'ok');
     } catch (e) {
