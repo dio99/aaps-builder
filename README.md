@@ -26,6 +26,9 @@ These buttons always open **this** repository, whatever you named it:
 > in the address bar. To stop GitHub links opening in the app: Android Settings → Apps →
 > GitHub → Open by default → turn off **Open supported links**.
 
+> **"This workflow does not exist"?** Open the **Actions** tab and reload the page. Still missing? Open
+> `.github/workflows/build.yml`, click the pencil ✏️, add an empty line at the end and commit. Then try again.
+
 **New AAPS version?** Press **Build AAPS** → **Run workflow** again. `latest` always builds the newest release.
 
 **📧 E-mail when a build is done (optional):** by default GitHub only e-mails you when a build fails. To also get an
