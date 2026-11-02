@@ -39,6 +39,20 @@ e-mail when it succeeds: open [github.com/settings/notifications](https://github
 update of AAPS Builder is ever required, you get an issue (and an e-mail) in your repository. See
 [Updating your copy](#-updating-your-copy).
 
+## 🔁 Coming from Browser Build?
+
+Use the key from your Browser Build fork, then the new AAPS installs over your current one and keeps its settings:
+
+1. In your **fork**: Settings → Secrets and variables → Actions → **New repository secret**: `ZIP_PASSWORD`
+   (only English letters and numbers).
+2. In the fork: **Actions → CI Keystore Export → Run workflow**.
+3. In Google Drive, open **AAPS → KeyStore** → the newest `keystore-….zip`, unzip it with your ZIP_PASSWORD.
+4. Copy **all** text of `keystore_set.txt` and paste it as the secret `KEYSTORE_SET` in **this** repository
+   (if it already exists: pencil ✏️ → paste → **Update secret**). No `keystore_set.txt`? Use `keystore.jks` and
+   `keyStoreInfo.txt` on the [setup page](https://dio99.github.io/aaps-builder/) → "I already have a keystore".
+
+[Official guide: CI Keystore Export](https://androidaps.readthedocs.io/en/latest/SettingUpAaps/BrowserBuildKeystore.html#ci-keystore-export)
+
 ## 🔄 Updating your copy
 
 Do this when you get an **"AAPS Builder update available"** issue. Your copy does not change by itself, so you copy

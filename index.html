@@ -92,6 +92,7 @@
     <div class="lang"><button data-lang="en">EN</button> <button data-lang="sv">SV</button></div>
   </header>
   <p class="lead" data-i18n="lead"></p>
+  <div class="box"><b data-i18n="already.title"></b> <span data-i18n="already.text"></span></div>
 
   <!-- Step 1: GitHub account + private repo -->
   <section class="step" id="s1">
@@ -117,6 +118,17 @@
   <section class="step" id="s2">
     <h2><span class="num">2</span><span data-i18n="s2.title"></span></h2>
     <p data-i18n="s2.text"></p>
+    <div class="warnbox">
+      <b data-i18n="bb.title"></b>
+      <ol>
+        <li data-i18n="bb.1"></li>
+        <li data-i18n="bb.2"></li>
+        <li data-i18n="bb.3"></li>
+        <li data-i18n="bb.4"></li>
+        <li data-i18n="bb.5"></li>
+      </ol>
+      <a href="https://androidaps.readthedocs.io/en/latest/SettingUpAaps/BrowserBuildKeystore.html#ci-keystore-export" target="_blank" rel="noopener" data-i18n="bb.link"></a>
+    </div>
     <div class="tabs">
       <button id="tabHave"><b data-i18n="s2.have"></b><span class="muted" data-i18n="s2.haveSub"></span></button>
       <button id="tabNew"><b data-i18n="s2.new"></b><span class="muted" data-i18n="s2.newSub"></span></button>
@@ -273,10 +285,19 @@
       notFound: 'Getting "Page not found" (404)? 1) Log in to github.com in THIS browser: GitHub shows 404 for private repositories when you are not logged in. 2) Check your username and repository name in step 1. 3) Or skip these links: open your repository on github.com (your profile picture → Your repositories) and use the buttons Add your key / Build AAPS / My builds on its front page. They always work.',
       userOk: '✓ GitHub user found.',
       userBad: '✗ No GitHub user with this name. Use your username (shown in your profile), not your e-mail.',
+      'already.title': 'Already set up?',
+      'already.text': 'Don’t start over and don’t create a new key. Open your repository on github.com (profile picture → Your repositories) → Actions → Build AAPS → Run workflow.',
+      'bb.title': 'Built AAPS with Browser Build (your fork of AndroidAPS) before? Use that same key: then the new AAPS installs over your current one and keeps its settings.',
+      'bb.1': 'In your Browser Build fork: Settings → Secrets and variables → Actions → New repository secret. Name: ZIP_PASSWORD. Secret: a password with only English letters and numbers.',
+      'bb.2': 'In the fork: Actions → CI Keystore Export → Run workflow.',
+      'bb.3': 'In Google Drive, open AAPS → KeyStore → the newest keystore-….zip and unzip it with your ZIP_PASSWORD (a computer is easiest).',
+      'bb.4': 'Below, choose "I already have a keystore": pick keystore.jks from the zip and type the password and alias from keyStoreInfo.txt.',
+      'bb.5': 'Shortcut: the zip may also contain keystore_set.txt. Its whole text is your long code: paste it as the secret KEYSTORE_SET (step 3) and skip step 2. Already have an AAPS Builder repository with another key? Replace its KEYSTORE_SET (pencil ✏️) instead of making a new repository.',
+      'bb.link': 'Official guide: CI Keystore Export',
       's2.title': 'Your signing key',
       's2.text': 'The app must be signed with your own key. Always use the same key, otherwise you have to uninstall AAPS (and lose its settings) to update.',
       's2.have': 'I already have a keystore',
-      's2.haveSub': 'e.g. from Android Studio (.jks)',
+      's2.haveSub': 'e.g. from Android Studio or Browser Build (.jks)',
       's2.new': 'Create a new key',
       's2.newSub': 'first time building AAPS',
       'have.file': 'Keystore file',
@@ -373,10 +394,19 @@
       notFound: 'Får du "Page not found" (404)? 1) Logga in på github.com i DEN HÄR webbläsaren: GitHub visar 404 för privata repon när du inte är inloggad. 2) Kontrollera användarnamn och reponamn i steg 1. 3) Eller hoppa över länkarna: öppna ditt repo på github.com (din profilbild → Your repositories) och använd knapparna Add your key / Build AAPS / My builds på dess förstasida. De fungerar alltid.',
       userOk: '✓ GitHub-användaren finns.',
       userBad: '✗ Ingen GitHub-användare med det namnet. Använd ditt användarnamn (syns i din profil), inte din e-post.',
+      'already.title': 'Redan klar med installationen?',
+      'already.text': 'Börja inte om och skapa ingen ny nyckel. Öppna ditt repo på github.com (profilbild → Your repositories) → Actions → Build AAPS → Run workflow.',
+      'bb.title': 'Har du byggt AAPS med Browser Build (din fork av AndroidAPS) tidigare? Använd samma nyckel: då installeras nya AAPS ovanpå den du har och behåller inställningarna.',
+      'bb.1': 'I din Browser Build-fork: Settings → Secrets and variables → Actions → New repository secret. Name: ZIP_PASSWORD. Secret: ett lösenord med bara engelska bokstäver och siffror.',
+      'bb.2': 'I forken: Actions → CI Keystore Export → Run workflow.',
+      'bb.3': 'Öppna AAPS → KeyStore i Google Drive → den senaste keystore-….zip och packa upp den med ditt ZIP_PASSWORD (enklast på en dator).',
+      'bb.4': 'Välj "Jag har redan en keystore" nedan: välj keystore.jks från zip-filen och skriv lösenordet och aliaset från keyStoreInfo.txt.',
+      'bb.5': 'Genväg: zip-filen kan också innehålla keystore_set.txt. Hela dess text är din långa kod: klistra in den som secreten KEYSTORE_SET (steg 3) och hoppa över steg 2. Har du redan ett AAPS Builder-repo med en annan nyckel? Byt ut dess KEYSTORE_SET (pennan ✏️) i stället för att skapa ett nytt repo.',
+      'bb.link': 'Officiell guide: CI Keystore Export',
       's2.title': 'Din signeringsnyckel',
       's2.text': 'Appen måste signeras med din egen nyckel. Använd alltid samma nyckel, annars måste du avinstallera AAPS (och tappa inställningarna) för att uppdatera.',
       's2.have': 'Jag har redan en keystore',
-      's2.haveSub': 't.ex. från Android Studio (.jks)',
+      's2.haveSub': 't.ex. från Android Studio eller Browser Build (.jks)',
       's2.new': 'Skapa en ny nyckel',
       's2.newSub': 'första gången du bygger AAPS',
       'have.file': 'Keystore-fil',
