@@ -18,7 +18,7 @@ These buttons always open **this** repository, whatever you named it:
 | | |
 |---|---|
 | 🔑 **[Add your key](../../settings/secrets/actions/new)** | Name: `KEYSTORE_SET` · Secret: the long code from the setup page |
-| ▶️ **[Build AAPS](../../actions/workflows/build.yml)** | Run workflow → Run workflow |
+| ▶️ **[Build AAPS](../../actions/workflows/build.yml)** | Run workflow → Run workflow, then just wait 15–30 min (nothing to click) |
 | 📦 **[My builds](../../actions)** | Open a finished build → tap **📱 Download AAPS** |
 
 > **On a phone, use the web browser (Chrome), not the GitHub app.** The app cannot show or download your builds.
